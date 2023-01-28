@@ -23,15 +23,21 @@ class PollController(val pollService: PollService) {
             attendees = pollDTO.attendees,
             status = Poll.Companion.Status.IN_PROGRESS
         ).let { pollService.create(it) }
-            .let { PollDTO(
-                id = it.id,
-                attendees = it.attendees,
-                options = it.options,
-                status = it.status.toString(),
-            ) }
+            .let { mapDomainToDTO(it) }
     }
 
-    // todo: create listing
+    private fun mapDomainToDTO(it: Poll) = PollDTO(
+        id = it.id,
+        attendees = it.attendees.map { it.toString() },
+        options = it.options.map { it.toString() },
+        status = it.status.toString(),
+    )
+
+    @GetMapping
+    fun getPolls(): List<PollDTO> {
+        val polls = pollService.getPolls()
+        return polls.map { mapDomainToDTO(it) }
+    }
 
     // todo: votes
 

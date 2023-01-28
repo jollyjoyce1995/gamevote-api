@@ -1,5 +1,6 @@
 package at.tailor.gamevoteapi.poll.service.domain
 
+import at.tailor.gamevoteapi.poll.controller.dto.PollDTO
 import at.tailor.gamevoteapi.poll.service.persistence.PollEntity
 import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
 import org.springframework.stereotype.Service
@@ -24,10 +25,16 @@ class PollService(
     private fun toDomain(pollEntity: PollEntity): Poll {
         return Poll(
             id = pollEntity.id,
-            options = pollEntity.options,
-            attendees = pollEntity.attendees,
+            options = pollEntity.options.map { it },
+            attendees = pollEntity.attendees.map { it },
             status = Poll.Companion.Status.valueOf(pollEntity.status),
         )
+    }
+
+    @Transactional
+    fun getPolls(): List<Poll> {
+        val polls = pollRepository.findAll()
+        return polls.map { toDomain(it) }
     }
 
     /*

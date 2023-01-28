@@ -6,7 +6,7 @@ import jakarta.persistence.*
 data class PollEntity (
     @Id @GeneratedValue val id: Long = 0,
     @ElementCollection
-    @CollectionTable(name = "string_list", joinColumns = [JoinColumn(name = "entity_id")])
+    @CollectionTable(name = "poll_options", joinColumns = [JoinColumn(name = "entity_id")])
     @Column(name = "string_value")
     var options: List<String> = mutableListOf(),
     @ElementCollection
