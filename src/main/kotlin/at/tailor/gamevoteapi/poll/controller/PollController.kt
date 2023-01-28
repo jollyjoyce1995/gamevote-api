@@ -1,13 +1,12 @@
 package at.tailor.gamevoteapi.poll.controller
 
+import at.tailor.gamevoteapi.poll.controller.dto.PollDTO
 import at.tailor.gamevoteapi.poll.service.domain.Poll
 import at.tailor.gamevoteapi.poll.service.domain.PollService
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.validation.FieldError
 import org.springframework.validation.ObjectError
-import org.springframework.validation.annotation.Validated
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.support.WebExchangeBindException
 import java.util.function.Consumer

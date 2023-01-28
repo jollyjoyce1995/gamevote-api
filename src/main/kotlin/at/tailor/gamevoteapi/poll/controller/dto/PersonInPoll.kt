@@ -1,4 +1,4 @@
-package at.tailor.gamevoteapi.poll.controller
+package at.tailor.gamevoteapi.poll.controller.dto
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped
 
