@@ -31,6 +31,11 @@ class PollController(val pollService: PollService) {
             ) }
     }
 
+    // todo: create listing
+
+    // todo: votes
+
+    // todo: move this to a generic place
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(WebExchangeBindException::class)
     fun handleValidationExceptions(
