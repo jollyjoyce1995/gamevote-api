@@ -18,13 +18,49 @@ class PollController(val pollService: PollService) {
 
     @PostMapping
     fun createPoll(@Valid @RequestBody pollDTO: PollDTO): PollDTO {
-        return Poll(
-            options = pollDTO.options,
-            attendees = pollDTO.attendees,
-            status = Poll.Companion.Status.IN_PROGRESS
-        ).let { pollService.create(it) }
+        return mapDTOToDomain(pollDTO)
+            .let { pollService.create(it) }
             .let { mapDomainToDTO(it) }
     }
+
+    @GetMapping
+    fun getPolls(): List<PollDTO> {
+        val polls = pollService.getPolls()
+        return polls.map { mapDomainToDTO(it) }
+    }
+
+    @GetMapping("/{id}")
+    fun getPoll(@PathVariable("id") id: Long): PollDTO {
+        return pollService.getPoll(id).let { mapDomainToDTO(it) }
+    }
+
+    @PutMapping("/{id}")
+    fun putMapping(@PathVariable("id") id: Long, @Valid @RequestBody pollDTO: PollDTO): PollDTO {
+        var poll = mapDTOToDomain(pollDTO)
+        poll = pollService.updatePoll(poll)
+        return poll.let { mapDomainToDTO(it) }
+    }
+
+    @GetMapping("/{id}/votes")
+    fun getVotes(@PathVariable("id") id: Long): Map<String, Map<String, Boolean>> {
+        return pollService.getVotes(id)
+    }
+
+    @PutMapping("/{id}/votes/{attendee}")
+    fun putVote(
+        @PathVariable("id") id: Long,
+        @PathVariable("attendee") attendee: String,
+        @RequestBody choices: Map<String, Boolean>
+    ): Map<String, Boolean> {
+        return pollService.addVote(id, attendee, choices)
+    }
+
+    private fun mapDTOToDomain(pollDTO: PollDTO) = Poll(
+        id = pollDTO.id,
+        options = pollDTO.options.toSet(),
+        attendees = pollDTO.attendees.toSet(),
+        status = pollDTO.status?.let { Poll.Companion.Status.valueOf(it) } ?: Poll.Companion.Status.IN_PROGRESS
+    )
 
     private fun mapDomainToDTO(it: Poll) = PollDTO(
         id = it.id,
@@ -32,12 +68,6 @@ class PollController(val pollService: PollService) {
         options = it.options.map { it.toString() },
         status = it.status.toString(),
     )
-
-    @GetMapping
-    fun getPolls(): List<PollDTO> {
-        val polls = pollService.getPolls()
-        return polls.map { mapDomainToDTO(it) }
-    }
 
     // todo: votes
 

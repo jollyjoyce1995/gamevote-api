@@ -13,7 +13,10 @@ data class PollEntity (
     @CollectionTable(name = "string_list", joinColumns = [JoinColumn(name = "entity_id")])
     @Column(name = "string_value")
     var attendees: List<String> = mutableListOf(),
+
     var status: String = "",
+    @OneToMany
+    var votes: List<Vote> = listOf()
 ) {
-    // todo: creation of database is broken
+
 }
