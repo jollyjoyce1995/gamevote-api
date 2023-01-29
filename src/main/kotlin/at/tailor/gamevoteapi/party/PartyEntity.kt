@@ -1,0 +1,18 @@
+package at.tailor.gamevoteapi.party
+
+import jakarta.persistence.*
+
+@Entity
+data class PartyEntity(
+    @Id @GeneratedValue val id: Long = 0,
+    @ElementCollection
+    @CollectionTable(name = "poll_options", joinColumns = [JoinColumn(name = "entity_id")])
+    @Column(name = "string_value")
+    var options: List<String> = mutableListOf(),
+    @ElementCollection
+    @CollectionTable(name = "string_list", joinColumns = [JoinColumn(name = "entity_id")])
+    @Column(name = "string_value")
+    var attendees: List<String> = mutableListOf(),
+
+    var status: String = "",
+)
