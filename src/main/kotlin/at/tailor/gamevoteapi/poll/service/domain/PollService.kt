@@ -77,7 +77,7 @@ class PollService(
 
     @Transactional
     fun addVote(id: Long, attendee: String, choices: Map<String, Boolean>): Map<String, Boolean> {
-        var pollEntity = pollRepository.findById(id).orElseThrow()
+        var pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
         val currentPoll = pollEntity.let { toDomain(pollEntity) }
 
         if (!currentPoll.attendees.contains(attendee)) {
@@ -89,20 +89,23 @@ class PollService(
 
         if (choices.keys.any { !currentPoll.options.contains(it) }) throw throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Some options are not valid.")
 
-        val votes = pollEntity.votes.associate { Pair(it.attendee, it.choices) }
-        if (votes.keys.contains(attendee)) {
+        val attendees = pollEntity.votes.map { it.attendee }.toSet()
+        if (attendees.contains(attendee)) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot override vote.")
         }
 
+        val newVotes = pollEntity.votes.toMutableList()
 
-        return votes.toMutableMap().let {
-            it.put(attendee, choices)
-            pollEntity.votes = it.toList().map {
-                // todo: this is still a problem
-                voteRepository.save(Vote(attendee = it.first, choices = it.second))
-            }
-            pollEntity = pollRepository.save(pollEntity)
-            choices
+        val normalizedChoices = pollEntity.options.associate {
+            val choice = choices[it] ?: false
+            Pair(it, choice)
         }
+
+        newVotes.add(Vote(attendee = attendee, choices = normalizedChoices).let { voteRepository.save(it) })
+        pollEntity = pollEntity.let {
+            it.votes = newVotes
+            pollRepository.save(it)
+        }
+        return normalizedChoices
     }
 }
