@@ -32,7 +32,9 @@ class PartyController(
         id = it.id,
         attendees = it.attendees,
         options = it.options,
-        status = it.status.toString()
+        status = it.status.toString(),
+        results = it.results
+
     )
 
     @GetMapping("/{id}")
@@ -45,6 +47,9 @@ class PartyController(
     // todo: add attendee
     // todo: remove option
     // todo: remove attendee
+
+    // todo: add vote (must move status of party as well)
+
 
     @PatchMapping("/{id}")
     fun patchParty(@PathVariable("id") id: Long, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {

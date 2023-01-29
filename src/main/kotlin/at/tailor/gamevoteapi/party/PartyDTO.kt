@@ -5,5 +5,5 @@ data class PartyDTO (
     val attendees: Set<String> = setOf(),
     val options: Set<String> = setOf(),
     val status: String? = null,
-
+    val results: Map<String, Int>? = null
 )

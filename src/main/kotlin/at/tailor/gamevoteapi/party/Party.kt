@@ -5,4 +5,5 @@ data class Party (
     val attendees: Set<String> = setOf(),
     val options: Set<String> = setOf(),
     val status: PartyStatus = PartyStatus.NOMINATION,
+    val results: Map<String, Int>? = null
 )

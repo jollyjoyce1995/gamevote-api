@@ -43,7 +43,8 @@ class PartyService(
         id = it.id,
         attendees = it.attendees.toSet(),
         options = it.options.toSet(),
-        status = PartyStatus.valueOf(it.status)
+        status = PartyStatus.valueOf(it.status),
+        results = it.results.toMap()
     )
 
     @Transactional
