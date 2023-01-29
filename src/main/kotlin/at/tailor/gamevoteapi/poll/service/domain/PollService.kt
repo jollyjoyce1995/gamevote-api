@@ -33,7 +33,7 @@ class PollService(
         return polls.map { toDomain(it) }
     }
 
-    private fun toDomain(pollEntity: PollEntity): Poll {
+    fun toDomain(pollEntity: PollEntity): Poll {
         return Poll(
             id = pollEntity.id,
             options = pollEntity.options.map { it }.toSet(),

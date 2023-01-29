@@ -4,7 +4,7 @@ data class Poll (
     val id: Long? = null,
     val options: Set<String>,
     val attendees: Set<String>,
-    var status: Status
+    var status: Status = Status.IN_PROGRESS
 ) {
 
     companion object {

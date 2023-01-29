@@ -1,5 +1,7 @@
 package at.tailor.gamevoteapi.party
 
+import at.tailor.gamevoteapi.poll.service.persistence.PollEntity
+import at.tailor.gamevoteapi.poll.service.persistence.Vote
 import jakarta.persistence.*
 
 @Entity
@@ -15,4 +17,8 @@ data class PartyEntity(
     var attendees: List<String> = mutableListOf(),
 
     var status: String = "",
+    @ManyToOne
+    var poll: PollEntity? = null,
+    @ElementCollection
+    var results: Map<String, Int> = mapOf()
 )

@@ -1,5 +1,10 @@
 package at.tailor.gamevoteapi.party
 
+import at.tailor.gamevoteapi.poll.service.domain.Poll
+import at.tailor.gamevoteapi.poll.service.domain.PollService
+import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
+import at.tailor.gamevoteapi.poll.service.persistence.Vote
+import jakarta.persistence.OneToMany
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -7,7 +12,9 @@ import org.springframework.web.server.ResponseStatusException
 
 @Service
 class PartyService(
-    val partyRepository: PartyRepository
+    val partyRepository: PartyRepository,
+    val pollService: PollService,
+    val pollRepository: PollRepository,
 ) {
 
     @Transactional
@@ -38,4 +45,53 @@ class PartyService(
         options = it.options.toSet(),
         status = PartyStatus.valueOf(it.status)
     )
+
+    @Transactional
+    fun patchParty(id: Long, patchPartyRequest: PatchPartyRequest): Party {
+        val partyEntity = partyRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val party = toDomain(partyEntity)
+        val fromStatus = party.status
+        val toStatus = patchPartyRequest.status
+        // no transition
+        if (fromStatus == toStatus) {
+            return party
+        }
+
+        val transition = Pair(fromStatus, toStatus)
+        // illegal transitions
+        if (transition ==  Pair(PartyStatus.NOMINATION, PartyStatus.RESULTS)) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST)
+        }
+
+        if (setOf(PartyStatus.VOTING, PartyStatus.NOMINATION).contains(toStatus)) {
+            if (partyEntity.poll != null) {
+                val poll = pollService.toDomain(partyEntity.poll!!)
+                poll.status = Poll.Companion.Status.COMPLETED
+                pollService.updatePoll(poll)
+                partyEntity.poll = null
+                partyEntity.results = mapOf()
+            }
+        }
+        if (PartyStatus.VOTING == toStatus) {
+            val pollEntity = pollService.create(
+                Poll(
+                    options = party.options,
+                    attendees = party.attendees,
+                )
+            ).let { pollRepository.findById(it.id!!).orElseThrow() }
+            partyEntity.poll = pollEntity
+        } else if (PartyStatus.RESULTS == toStatus) {
+            val poll = pollService.toDomain(partyEntity.poll!!)
+            val results = pollService.getResults(poll.id!!)
+            partyEntity.results = results
+
+            poll.status = Poll.Companion.Status.COMPLETED
+            pollService.updatePoll(poll)
+            partyEntity.poll = null
+        }
+        partyEntity.status = patchPartyRequest.status.toString()
+        partyRepository.save(partyEntity)
+
+        return toDomain(partyEntity)
+    }
 }

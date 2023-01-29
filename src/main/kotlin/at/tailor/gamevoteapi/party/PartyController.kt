@@ -1,6 +1,8 @@
 package at.tailor.gamevoteapi.party
 
+import at.tailor.gamevoteapi.poll.service.domain.PollService
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -38,4 +40,20 @@ class PartyController(
         val party = partyService.getParty(id)
         return toDTO(party)
     }
+
+    // todo: add option
+    // todo: add attendee
+    // todo: remove option
+    // todo: remove attendee
+
+    @PatchMapping("/{id}")
+    fun patchParty(@PathVariable("id") id: Long, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {
+        return partyService.patchParty(id, PatchPartyRequest(
+            status = PartyStatus.valueOf(patchPartyDTO.status)
+        )).let { toDTO(it) }
+    }
+
 }
+
+
+
