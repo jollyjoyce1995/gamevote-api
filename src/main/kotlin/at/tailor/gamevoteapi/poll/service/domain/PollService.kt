@@ -71,8 +71,8 @@ class PollService(
 
     @Transactional
     fun getVotes(id: Long): Map<String, Map<String, Boolean>> {
-        var pollEntity = pollRepository.findById(id).orElseThrow()
-        return pollEntity.votes.associate { Pair(it.attendee, it.choices) }
+        var pollEntity = pollRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        return pollEntity.votes.associate { Pair(it.attendee, it.choices.toMap()) }
     }
 
     @Transactional
