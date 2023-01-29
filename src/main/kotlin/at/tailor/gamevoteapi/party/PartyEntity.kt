@@ -10,7 +10,7 @@ data class PartyEntity(
     @Column(name = "string_value")
     var options: List<String> = mutableListOf(),
     @ElementCollection
-    @CollectionTable(name = "party_attendes", joinColumns = [JoinColumn(name = "entity_id")])
+    @CollectionTable(name = "party_attendees", joinColumns = [JoinColumn(name = "entity_id")])
     @Column(name = "string_value")
     var attendees: List<String> = mutableListOf(),
 
