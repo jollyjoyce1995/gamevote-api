@@ -55,6 +55,13 @@ class PollController(val pollService: PollService) {
         return pollService.addVote(id, attendee, choices)
     }
 
+    @GetMapping("/{id}/results")
+    fun getResults(
+        @PathVariable("id") id: Long
+    ): Map<String, Int> {
+        return pollService.getResults(id)
+    }
+
     private fun mapDTOToDomain(pollDTO: PollDTO) = Poll(
         id = pollDTO.id,
         options = pollDTO.options.toSet(),

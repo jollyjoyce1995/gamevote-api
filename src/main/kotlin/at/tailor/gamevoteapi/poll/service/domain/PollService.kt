@@ -61,11 +61,16 @@ class PollService(
                 HttpStatus.BAD_REQUEST, "Can't reactivate completed polls."
             )
         }
+        if (
+            currentPoll.status == Poll.Companion.Status.IN_PROGRESS &&
+            poll.status == Poll.Companion.Status.COMPLETED
+        ) {
+            pollEntity.status = poll.status.toString()
+            pollEntity = pollRepository.save(pollEntity)
+        }
 
-        currentPoll.status = poll.status
 
-        pollEntity.status = poll.status.toString()
-        pollEntity = pollRepository.save(pollEntity)
+
         return toDomain(pollEntity)
     }
 
@@ -107,5 +112,18 @@ class PollService(
             pollRepository.save(it)
         }
         return normalizedChoices
+    }
+
+    @Transactional
+    fun getResults(id: Long): Map<String, Int> {
+        var pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val votes = getVotes(id)
+        return pollEntity.options.associate { option -> Pair(
+            option,
+            votes.filter { vote ->
+                val choices = vote.value
+                choices[option]!!
+            }.size
+        ) }.map { it }.sortedByDescending { it.value }.associate { it.toPair() }
     }
 }
