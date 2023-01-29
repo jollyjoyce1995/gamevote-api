@@ -7,7 +7,6 @@ import at.tailor.gamevoteapi.poll.service.persistence.VoteRepository
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.client.HttpStatusCodeException
 import org.springframework.web.server.ResponseStatusException
 
 
@@ -107,10 +106,16 @@ class PollService(
         }
 
         newVotes.add(Vote(attendee = attendee, choices = normalizedChoices).let { voteRepository.save(it) })
-        pollEntity = pollEntity.let {
-            it.votes = newVotes
-            pollRepository.save(it)
+        pollEntity.votes = newVotes
+
+        val allAttendeesHaveAVote = currentPoll.attendees.all { possibleAttendee ->
+            newVotes.map { it.attendee }.contains(possibleAttendee)
         }
+        if (allAttendeesHaveAVote) {
+            pollEntity.status = Poll.Companion.Status.COMPLETED.toString()
+        }
+
+        pollRepository.save(pollEntity)
         return normalizedChoices
     }
 
