@@ -5,6 +5,7 @@ import jakarta.persistence.*
 @Entity
 data class PartyEntity(
     @Id @GeneratedValue val id: Long = 0,
+    // todo: adapt to other table, otherwise poll and  party is the same ???
     @ElementCollection
     @CollectionTable(name = "poll_options", joinColumns = [JoinColumn(name = "entity_id")])
     @Column(name = "string_value")

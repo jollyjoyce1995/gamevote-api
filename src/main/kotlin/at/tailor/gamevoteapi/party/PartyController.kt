@@ -1,5 +1,7 @@
 package at.tailor.gamevoteapi.party
 
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -20,12 +22,20 @@ class PartyController(
             )
         })
         return party.let {
-            PartyDTO(
-                id = it.id,
-                attendees = it.attendees,
-                options = it.options,
-                status = it.status.toString()
-            )
+            toDTO(it)
         }
+    }
+
+    private fun toDTO(it: Party) = PartyDTO(
+        id = it.id,
+        attendees = it.attendees,
+        options = it.options,
+        status = it.status.toString()
+    )
+
+    @GetMapping("/{id}")
+    fun getParty(@PathVariable("id") id: Long): PartyDTO {
+        val party = partyService.getParty(id)
+        return toDTO(party)
     }
 }
