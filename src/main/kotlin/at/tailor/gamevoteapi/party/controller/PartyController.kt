@@ -1,7 +1,13 @@
-package at.tailor.gamevoteapi.party
+package at.tailor.gamevoteapi.party.controller
 
 import at.tailor.gamevoteapi.common.dto.ContextLink
-import at.tailor.gamevoteapi.poll.service.domain.PollService
+import at.tailor.gamevoteapi.party.*
+import at.tailor.gamevoteapi.party.controller.data.PartyDTO
+import at.tailor.gamevoteapi.party.controller.data.PatchPartyDTO
+import at.tailor.gamevoteapi.party.service.data.Party
+import at.tailor.gamevoteapi.party.service.PartyService
+import at.tailor.gamevoteapi.party.service.data.PartyStatus
+import at.tailor.gamevoteapi.party.service.data.PatchPartyRequest
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -55,7 +61,8 @@ class PartyController(
     fun patchParty(@PathVariable("id") id: Long, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {
         return partyService.patchParty(id, PatchPartyRequest(
             status = PartyStatus.valueOf(patchPartyDTO.status)
-        )).let { toDTO(it) }
+        )
+        ).let { toDTO(it) }
     }
 
 }

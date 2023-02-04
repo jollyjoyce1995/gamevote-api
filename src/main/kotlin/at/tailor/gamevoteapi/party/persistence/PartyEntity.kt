@@ -1,4 +1,4 @@
-package at.tailor.gamevoteapi.party
+package at.tailor.gamevoteapi.party.persistence
 
 import at.tailor.gamevoteapi.poll.service.persistence.PollEntity
 import at.tailor.gamevoteapi.poll.service.persistence.Vote

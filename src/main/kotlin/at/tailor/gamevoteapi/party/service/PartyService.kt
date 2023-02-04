@@ -1,10 +1,13 @@
-package at.tailor.gamevoteapi.party
+package at.tailor.gamevoteapi.party.service
 
+import at.tailor.gamevoteapi.party.persistence.PartyEntity
+import at.tailor.gamevoteapi.party.persistence.PartyRepository
+import at.tailor.gamevoteapi.party.service.data.Party
+import at.tailor.gamevoteapi.party.service.data.PartyStatus
+import at.tailor.gamevoteapi.party.service.data.PatchPartyRequest
 import at.tailor.gamevoteapi.poll.service.domain.Poll
 import at.tailor.gamevoteapi.poll.service.domain.PollService
 import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
-import at.tailor.gamevoteapi.poll.service.persistence.Vote
-import jakarta.persistence.OneToMany
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

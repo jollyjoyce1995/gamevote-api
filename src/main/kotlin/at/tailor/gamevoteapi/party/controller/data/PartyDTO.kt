@@ -1,4 +1,4 @@
-package at.tailor.gamevoteapi.party
+package at.tailor.gamevoteapi.party.controller.data
 
 import at.tailor.gamevoteapi.common.dto.ContextLink
 import com.fasterxml.jackson.annotation.JsonProperty
