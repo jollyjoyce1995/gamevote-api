@@ -1,9 +1,14 @@
 package at.tailor.gamevoteapi.party
 
+import at.tailor.gamevoteapi.common.dto.ContextLink
+import com.fasterxml.jackson.annotation.JsonProperty
+
 data class PartyDTO (
     val id: Long? = null,
     val attendees: Set<String> = setOf(),
     val options: Set<String> = setOf(),
     val status: String? = null,
-    val results: Map<String, Int>? = null
+    val results: Map<String, Int>? = null,
+    @JsonProperty("_links")
+    val links: Map<String, ContextLink>? = null
 )

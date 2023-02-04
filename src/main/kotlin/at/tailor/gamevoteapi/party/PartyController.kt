@@ -1,5 +1,6 @@
 package at.tailor.gamevoteapi.party
 
+import at.tailor.gamevoteapi.common.dto.ContextLink
 import at.tailor.gamevoteapi.poll.service.domain.PollService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
@@ -23,9 +24,7 @@ class PartyController(
                 options = it.options
             )
         })
-        return party.let {
-            toDTO(it)
-        }
+        return toDTO(party)
     }
 
     private fun toDTO(it: Party) = PartyDTO(
@@ -33,8 +32,10 @@ class PartyController(
         attendees = it.attendees,
         options = it.options,
         status = it.status.toString(),
-        results = it.results
-
+        results = it.results,
+        links = mapOf(
+            Pair("self", ContextLink("/party/${it.id}"))
+        )
     )
 
     @GetMapping("/{id}")
@@ -48,7 +49,6 @@ class PartyController(
     // todo: remove option
     // todo: remove attendee
 
-    // todo: add vote (must move status of party as well)
 
 
     @PatchMapping("/{id}")
