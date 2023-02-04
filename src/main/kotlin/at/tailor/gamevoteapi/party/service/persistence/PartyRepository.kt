@@ -1,4 +1,4 @@
-package at.tailor.gamevoteapi.party.persistence
+package at.tailor.gamevoteapi.party.service.persistence
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

@@ -1,7 +1,6 @@
-package at.tailor.gamevoteapi.party.persistence
+package at.tailor.gamevoteapi.party.service.persistence
 
 import at.tailor.gamevoteapi.poll.service.persistence.PollEntity
-import at.tailor.gamevoteapi.poll.service.persistence.Vote
 import jakarta.persistence.*
 
 @Entity

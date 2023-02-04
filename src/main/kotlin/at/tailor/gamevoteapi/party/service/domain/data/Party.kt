@@ -1,4 +1,4 @@
-package at.tailor.gamevoteapi.party.service.data
+package at.tailor.gamevoteapi.party.service.domain.data
 
 data class Party (
     val id: Long? = null,

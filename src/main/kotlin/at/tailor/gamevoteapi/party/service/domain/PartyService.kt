@@ -1,10 +1,10 @@
-package at.tailor.gamevoteapi.party.service
+package at.tailor.gamevoteapi.party.service.domain
 
-import at.tailor.gamevoteapi.party.persistence.PartyEntity
-import at.tailor.gamevoteapi.party.persistence.PartyRepository
-import at.tailor.gamevoteapi.party.service.data.Party
-import at.tailor.gamevoteapi.party.service.data.PartyStatus
-import at.tailor.gamevoteapi.party.service.data.PatchPartyRequest
+import at.tailor.gamevoteapi.party.service.persistence.PartyEntity
+import at.tailor.gamevoteapi.party.service.persistence.PartyRepository
+import at.tailor.gamevoteapi.party.service.domain.data.Party
+import at.tailor.gamevoteapi.party.service.domain.data.PartyStatus
+import at.tailor.gamevoteapi.party.service.domain.data.PatchPartyRequest
 import at.tailor.gamevoteapi.poll.service.domain.Poll
 import at.tailor.gamevoteapi.poll.service.domain.PollService
 import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
