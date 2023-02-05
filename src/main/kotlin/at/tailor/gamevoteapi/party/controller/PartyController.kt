@@ -55,12 +55,22 @@ class PartyController(
         return toDTO(party)
     }
 
+    @GetMapping("/{id}/options")
+    fun getOptions(@PathVariable("id") id: Long): Set<String> {
+        val party = partyService.getParty(id)
+        return toDTO(party).options
+    }
+
+    @GetMapping("/{id}/attendees")
+    fun getAttendees(@PathVariable("id") id: Long): Set<String> {
+        val party = partyService.getParty(id)
+        return toDTO(party).attendees
+    }
+
     // todo: add option
     // todo: add attendee
     // todo: remove option
     // todo: remove attendee
-
-
 
     @PatchMapping("/{id}")
     fun patchParty(@PathVariable("id") id: Long, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {
