@@ -1,6 +1,6 @@
 package at.tailor.gamevoteapi.poll.controller
 
-import at.tailor.gamevoteapi.poll.controller.dto.PollDTO
+import at.tailor.gamevoteapi.poll.controller.data.PollDTO
 import at.tailor.gamevoteapi.poll.service.domain.Poll
 import at.tailor.gamevoteapi.poll.service.domain.PollService
 import jakarta.validation.Valid

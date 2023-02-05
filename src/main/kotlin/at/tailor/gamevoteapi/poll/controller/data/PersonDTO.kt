@@ -1,4 +1,4 @@
-package at.tailor.gamevoteapi.poll.controller.dto
+package at.tailor.gamevoteapi.poll.controller.data
 
 import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull

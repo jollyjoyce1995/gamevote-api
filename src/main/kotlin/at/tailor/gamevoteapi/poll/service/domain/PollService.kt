@@ -1,5 +1,6 @@
 package at.tailor.gamevoteapi.poll.service.domain
 
+import at.tailor.gamevoteapi.party.service.persistence.PartyRepository
 import at.tailor.gamevoteapi.poll.service.persistence.PollEntity
 import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
 import at.tailor.gamevoteapi.poll.service.persistence.Vote
@@ -14,6 +15,7 @@ import org.springframework.web.server.ResponseStatusException
 class PollService(
     val pollRepository: PollRepository,
     val voteRepository: VoteRepository,
+    val partyRepository: PartyRepository
 ) {
 
     @Transactional
@@ -64,7 +66,7 @@ class PollService(
             currentPoll.status == Poll.Companion.Status.IN_PROGRESS &&
             poll.status == Poll.Companion.Status.COMPLETED
         ) {
-            pollEntity.status = poll.status.toString()
+            completePoll(pollEntity)
             pollEntity = pollRepository.save(pollEntity)
         }
 
@@ -112,11 +114,16 @@ class PollService(
             newVotes.map { it.attendee }.contains(possibleAttendee)
         }
         if (allAttendeesHaveAVote) {
-            pollEntity.status = Poll.Companion.Status.COMPLETED.toString()
+            completePoll(pollEntity)
         }
 
         pollRepository.save(pollEntity)
         return normalizedChoices
+    }
+
+    private fun completePoll(pollEntity: PollEntity) {
+        pollEntity.status = Poll.Companion.Status.COMPLETED.toString()
+
     }
 
     @Transactional

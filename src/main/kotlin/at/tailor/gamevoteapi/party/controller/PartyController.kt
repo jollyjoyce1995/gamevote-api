@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/party")
+@RequestMapping("/parties")
 class PartyController(
     val partyService: PartyService
 ) {
@@ -33,16 +33,21 @@ class PartyController(
         return toDTO(party)
     }
 
-    private fun toDTO(it: Party) = PartyDTO(
-        id = it.id,
-        attendees = it.attendees,
-        options = it.options,
-        status = it.status.toString(),
-        results = it.results,
-        links = mapOf(
-            Pair("self", ContextLink("/party/${it.id}"))
+    private fun toDTO(party: Party): PartyDTO {
+        val links = mutableMapOf(
+            Pair("self", ContextLink("/parties/${party.id}"))
         )
-    )
+        party.poll?.let { links.put("poll", ContextLink("/polls/${it.id}")) }
+
+        return PartyDTO(
+            id = party.id,
+            attendees = party.attendees,
+            options = party.options,
+            status = party.status.toString(),
+            results = party.results,
+            links = links.toMap()
+        )
+    }
 
     @GetMapping("/{id}")
     fun getParty(@PathVariable("id") id: Long): PartyDTO {

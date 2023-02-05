@@ -16,7 +16,7 @@ data class PartyEntity(
     var attendees: List<String> = mutableListOf(),
 
     var status: String = "",
-    @ManyToOne
+    @OneToOne(mappedBy = "party")
     var poll: PollEntity? = null,
     @ElementCollection
     var results: Map<String, Int> = mapOf()

@@ -47,7 +47,8 @@ class PartyService(
         attendees = it.attendees.toSet(),
         options = it.options.toSet(),
         status = PartyStatus.valueOf(it.status),
-        results = it.results.toMap()
+        results = it.results.toMap(),
+        poll = it.poll?.let { pollService.toDomain(it) }
     )
 
     @Transactional

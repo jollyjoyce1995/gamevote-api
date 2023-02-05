@@ -1,5 +1,6 @@
 package at.tailor.gamevoteapi.poll.service.persistence
 
+import at.tailor.gamevoteapi.party.service.persistence.PartyEntity
 import jakarta.persistence.*
 
 @Entity
@@ -16,7 +17,9 @@ data class PollEntity (
 
     var status: String = "",
     @OneToMany
-    var votes: List<Vote> = listOf()
+    var votes: List<Vote> = listOf(),
+    @OneToOne(mappedBy = "poll")
+    var party: PartyEntity? = null
 ) {
 
 }
