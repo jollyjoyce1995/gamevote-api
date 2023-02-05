@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
+import java.lang.IndexOutOfBoundsException
 
 @Service
 class PartyService(
@@ -80,5 +81,49 @@ class PartyService(
         partyRepository.save(partyEntity)
 
         return partyConverter.toDomain(partyEntity)
+    }
+
+    @Transactional
+    fun addOption(id: Long, value: String) {
+        val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val newOptions = partyEntity.options.toMutableSet()
+        newOptions += value
+        partyEntity.options = newOptions.toList()
+        partyRepository.save(partyEntity)
+    }
+
+    @Transactional
+    fun addAttendee(id: Long, value: String) {
+        val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val newAttendees = partyEntity.attendees.toMutableSet()
+        newAttendees += value
+        partyEntity.attendees = newAttendees.toList()
+        partyRepository.save(partyEntity)
+    }
+
+    @Transactional
+    fun deleteAttendee(id: Long, attendeeId: Int) {
+        val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val newAttendees = partyEntity.attendees.toMutableList()
+        try {
+            newAttendees.removeAt(attendeeId)
+        } catch (e: IndexOutOfBoundsException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+        partyEntity.attendees = newAttendees
+        partyRepository.save(partyEntity)
+    }
+
+    @Transactional
+    fun deleteOption(id: Long, optionId: Int) {
+        val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val newOptions = partyEntity.options.toMutableList()
+        try {
+            newOptions.removeAt(optionId)
+        } catch (e: IndexOutOfBoundsException) {
+            throw ResponseStatusException(HttpStatus.NOT_FOUND)
+        }
+        partyEntity.options = newOptions
+        partyRepository.save(partyEntity)
     }
 }

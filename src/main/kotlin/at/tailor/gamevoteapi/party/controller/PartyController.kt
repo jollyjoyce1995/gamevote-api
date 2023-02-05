@@ -4,10 +4,12 @@ import at.tailor.gamevoteapi.common.dto.ContextLink
 import at.tailor.gamevoteapi.party.*
 import at.tailor.gamevoteapi.party.controller.data.PartyDTO
 import at.tailor.gamevoteapi.party.controller.data.PatchPartyDTO
+import at.tailor.gamevoteapi.party.controller.data.StringValue
 import at.tailor.gamevoteapi.party.service.domain.data.Party
 import at.tailor.gamevoteapi.party.service.domain.PartyService
 import at.tailor.gamevoteapi.party.service.domain.data.PartyStatus
 import at.tailor.gamevoteapi.party.service.domain.data.PatchPartyRequest
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -61,16 +63,33 @@ class PartyController(
         return toDTO(party).options
     }
 
+    @PostMapping("/{id}/options")
+    fun postOption(@PathVariable("id") id: Long, @RequestBody value: StringValue): StringValue {
+        partyService.addOption(id, value.value)
+        return value
+    }
+
+    @DeleteMapping("/{id}/options/{optionId}")
+    fun deleteOption(@PathVariable("id") id: Long, @PathVariable("optionId") optionId: Int) {
+        partyService.deleteOption(id, optionId)
+    }
+
     @GetMapping("/{id}/attendees")
     fun getAttendees(@PathVariable("id") id: Long): Set<String> {
         val party = partyService.getParty(id)
         return toDTO(party).attendees
     }
 
-    // todo: add option
-    // todo: add attendee
-    // todo: remove option
-    // todo: remove attendee
+    @PostMapping("/{id}/attendees")
+    fun postAttendee(@PathVariable("id") id: Long, @RequestBody value: StringValue): StringValue {
+        partyService.addAttendee(id, value.value)
+        return value
+    }
+
+    @DeleteMapping("/{id}/attendees/{attendeeId}")
+    fun deleteAttendee(@PathVariable("id") id: Long, @PathVariable("attendeeId") attendeeId: Int) {
+        partyService.deleteAttendee(id, attendeeId)
+    }
 
     @PatchMapping("/{id}")
     fun patchParty(@PathVariable("id") id: Long, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {
