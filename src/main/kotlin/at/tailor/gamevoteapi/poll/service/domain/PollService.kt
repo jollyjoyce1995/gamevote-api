@@ -15,7 +15,7 @@ import org.springframework.web.server.ResponseStatusException
 class PollService(
     val pollRepository: PollRepository,
     val voteRepository: VoteRepository,
-    val partyRepository: PartyRepository
+    val pollConverter: PollConverter
 ) {
 
     @Transactional
@@ -26,33 +26,24 @@ class PollService(
             status = Poll.Companion.Status.IN_PROGRESS.toString(),
             attendees = poll.attendees.toList()
         ).let { pollRepository.save(it) }
-            .let { toDomain(it) }
+            .let { pollConverter.toDomain(it) }
     }
 
     @Transactional
     fun getPolls(): List<Poll> {
         val polls = pollRepository.findAll()
-        return polls.map { toDomain(it) }
-    }
-
-    fun toDomain(pollEntity: PollEntity): Poll {
-        return Poll(
-            id = pollEntity.id,
-            options = pollEntity.options.map { it }.toSet(),
-            attendees = pollEntity.attendees.map { it }.toSet(),
-            status = Poll.Companion.Status.valueOf(pollEntity.status)
-        )
+        return polls.map { pollConverter.toDomain(it) }
     }
 
     @Transactional
     fun getPoll(id: Long): Poll {
-        return pollRepository.findById(id).orElseThrow().let { toDomain(it) }
+        return pollRepository.findById(id).orElseThrow().let { pollConverter.toDomain(it) }
     }
 
     @Transactional
     fun updatePoll(poll: Poll): Poll {
         var pollEntity = pollRepository.findById(poll.id!!).orElseThrow()
-        val currentPoll = pollEntity.let { toDomain(pollEntity) }
+        val currentPoll = pollEntity.let { pollConverter.toDomain(pollEntity) }
 
         if (
             currentPoll.status == Poll.Companion.Status.COMPLETED &&
@@ -72,7 +63,7 @@ class PollService(
 
 
 
-        return toDomain(pollEntity)
+        return pollConverter.toDomain(pollEntity)
     }
 
     @Transactional
@@ -84,7 +75,7 @@ class PollService(
     @Transactional
     fun addVote(id: Long, attendee: String, choices: Map<String, Boolean>): Map<String, Boolean> {
         var pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
-        val currentPoll = pollEntity.let { toDomain(pollEntity) }
+        val currentPoll = pollEntity.let { pollConverter.toDomain(pollEntity) }
 
         if (!currentPoll.attendees.contains(attendee)) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST, "Not an attendee")
