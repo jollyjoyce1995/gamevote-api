@@ -67,13 +67,15 @@ class PollService(
     }
 
     @Transactional
-    fun getVotes(id: Long): Map<String, Map<String, Boolean>> {
+    fun getVotes(id: Long): Map<String, Map<String, Int>> {
         var pollEntity = pollRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
         return pollEntity.votes.associate { Pair(it.attendee, it.choices.toMap()) }
     }
 
     @Transactional
-    fun addVote(id: Long, attendee: String, choices: Map<String, Boolean>): Map<String, Boolean> {
+    fun addVote(id: Long, attendee: String, choices: Map<String, Int>): Map<String, Int> {
+        // all values must be in between 1 and -1 (1 means upvote, -1 means downvote, 0 means no choice) // todo: time for a dto bro //todo: must be enumerated
+        if ( !choices.values.all{ it in -1..1} ) throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         var pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
         val currentPoll = pollEntity.let { pollConverter.toDomain(pollEntity) }
 
@@ -94,7 +96,7 @@ class PollService(
         val newVotes = pollEntity.votes.toMutableList()
 
         val normalizedChoices = pollEntity.options.associate {
-            val choice = choices[it] ?: false
+            val choice = choices[it] ?: 0
             Pair(it, choice)
         }
 
@@ -119,14 +121,11 @@ class PollService(
 
     @Transactional
     fun getResults(id: Long): Map<String, Int> {
-        var pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
         val votes = getVotes(id)
-        return pollEntity.options.associate { option -> Pair(
-            option,
-            votes.filter { vote ->
-                val choices = vote.value
-                choices[option]!!
-            }.size
-        ) }.map { it }.sortedByDescending { it.value }.associate { it.toPair() }
+        return pollEntity.options.associateWith { option -> votes.map { it.value[option] ?: 0 }.sum() }
+            .map { it }
+            .sortedByDescending { it.value }
+            .associate { it.toPair() }
     }
 }

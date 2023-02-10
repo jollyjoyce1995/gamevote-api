@@ -95,9 +95,10 @@ class PartyService(
     @Transactional
     fun addAttendee(id: Long, value: String) {
         val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        if (partyEntity.attendees.contains(value)) throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         val newAttendees = partyEntity.attendees.toMutableSet()
         newAttendees += value
-        partyEntity.attendees = newAttendees.toList()
+        partyEntity.attendees = newAttendees.toMutableList()
         partyRepository.save(partyEntity)
     }
 

@@ -42,7 +42,7 @@ class PollController(val pollService: PollService) {
     }
 
     @GetMapping("/{id}/votes")
-    fun getVotes(@PathVariable("id") id: Long): Map<String, Map<String, Boolean>> {
+    fun getVotes(@PathVariable("id") id: Long): Map<String, Map<String, Int>> {
         return pollService.getVotes(id)
     }
 
@@ -50,8 +50,8 @@ class PollController(val pollService: PollService) {
     fun putVote(
         @PathVariable("id") id: Long,
         @PathVariable("attendee") attendee: String,
-        @RequestBody choices: Map<String, Boolean>
-    ): Map<String, Boolean> {
+        @RequestBody choices: Map<String, Int>
+    ): Map<String, Int> {
         return pollService.addVote(id, attendee, choices)
     }
 

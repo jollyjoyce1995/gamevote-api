@@ -8,5 +8,5 @@ data class Vote(
     var attendee: String = "",
 
     @ElementCollection
-    var choices: Map<String, Boolean> = emptyMap(),
+    var choices: Map<String, Int> = emptyMap(),
 )

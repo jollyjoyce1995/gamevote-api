@@ -83,6 +83,7 @@ class PartyController(
     @PostMapping("/{id}/attendees")
     fun postAttendee(@PathVariable("id") id: Long, @RequestBody value: StringValue): StringValue {
         partyService.addAttendee(id, value.value)
+        // todo: throw exception if attendee is already added
         return value
     }
 
