@@ -1,6 +1,5 @@
 package at.tailor.gamevoteapi.poll.service.domain
 
-import at.tailor.gamevoteapi.party.service.persistence.PartyRepository
 import at.tailor.gamevoteapi.poll.service.persistence.PollEntity
 import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
 import at.tailor.gamevoteapi.poll.service.persistence.Vote
@@ -127,5 +126,18 @@ class PollService(
             .map { it }
             .sortedByDescending { it.value }
             .associate { it.toPair() }
+    }
+
+    @Transactional
+    fun getOutstanding(id: Long): List<String> {
+        val pollEntity = pollRepository.findById(id).orElseThrow{ ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val poll = pollConverter.toDomain(pollEntity)
+        val hasNotVoted: (String) -> Boolean = {
+            val votes = getVotes(id)
+            votes.keys.contains(it) &&
+                    votes[it] != null
+        }
+
+        return poll.attendees.filter(hasNotVoted).toList()
     }
 }

@@ -1,5 +1,6 @@
 package at.tailor.gamevoteapi.poll.controller
 
+import at.tailor.gamevoteapi.common.dto.ContextLink
 import at.tailor.gamevoteapi.poll.controller.data.PollDTO
 import at.tailor.gamevoteapi.poll.service.domain.Poll
 import at.tailor.gamevoteapi.poll.service.domain.PollService
@@ -46,6 +47,11 @@ class PollController(val pollService: PollService) {
         return pollService.getVotes(id)
     }
 
+    @GetMapping("/{id}/outstanding")
+    fun getOutstanding(@PathVariable("id") id: Long): List<String> {
+        return pollService.getOutstanding(id)
+    }
+
     @PutMapping("/{id}/votes/{attendee}")
     fun putVote(
         @PathVariable("id") id: Long,
@@ -69,14 +75,17 @@ class PollController(val pollService: PollService) {
         status = pollDTO.status?.let { Poll.Companion.Status.valueOf(it) } ?: Poll.Companion.Status.IN_PROGRESS
     )
 
-    private fun mapDomainToDTO(it: Poll) = PollDTO(
-        id = it.id,
-        attendees = it.attendees.map { it.toString() },
-        options = it.options.map { it.toString() },
-        status = it.status.toString(),
-    )
-
-    // todo: votes
+    private fun mapDomainToDTO(it: Poll): PollDTO {
+        return PollDTO(
+            id = it.id,
+            attendees = it.attendees.map { it.toString() },
+            options = it.options.map { it.toString() },
+            status = it.status.toString(),
+            links = mutableMapOf(
+                Pair("outstanding", ContextLink("/polls/${it.id}/outstanding"))
+            )
+        )
+    }
 
     // todo: move this to a generic place
     @ResponseStatus(HttpStatus.BAD_REQUEST)

@@ -51,6 +51,7 @@ class PartyController(
         )
     }
 
+    // todo: also include a model for party that shows who has voted and who has not
     @GetMapping("/{id}")
     fun getParty(@PathVariable("id") id: Long): PartyDTO {
         val party = partyService.getParty(id)
