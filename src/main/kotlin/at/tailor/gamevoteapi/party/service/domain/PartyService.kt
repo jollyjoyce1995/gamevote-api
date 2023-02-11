@@ -75,7 +75,6 @@ class PartyService(
 
             poll.status = Poll.Companion.Status.COMPLETED
             pollService.updatePoll(poll)
-            partyEntity.poll = null
         }
         partyEntity.status = patchPartyRequest.status.toString()
         partyRepository.save(partyEntity)
