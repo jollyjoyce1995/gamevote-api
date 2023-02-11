@@ -82,7 +82,8 @@ class PollController(val pollService: PollService) {
             options = it.options.map { it.toString() },
             status = it.status.toString(),
             links = mutableMapOf(
-                Pair("outstanding", ContextLink("/polls/${it.id}/outstanding"))
+                Pair("outstanding", ContextLink("/polls/${it.id}/outstanding")),
+                Pair("results", ContextLink("/polls/${it.id}/results"))
             )
         )
     }
