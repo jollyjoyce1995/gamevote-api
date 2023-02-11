@@ -57,7 +57,7 @@ class PartyService(
                 poll.status = Poll.Companion.Status.COMPLETED
                 pollService.updatePoll(poll)
                 partyEntity.poll = null
-                partyEntity.results = mapOf()
+                partyEntity.results = mutableMapOf()
             }
         }
         if (PartyStatus.VOTING == toStatus) {

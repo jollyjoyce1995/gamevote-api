@@ -50,8 +50,7 @@ class PartyController(
             links = links.toMap()
         )
     }
-
-    // todo: also include a model for party that shows who has voted and who has not
+    
     @GetMapping("/{id}")
     fun getParty(@PathVariable("id") id: Long): PartyDTO {
         val party = partyService.getParty(id)
@@ -84,7 +83,7 @@ class PartyController(
     @PostMapping("/{id}/attendees")
     fun postAttendee(@PathVariable("id") id: Long, @RequestBody value: StringValue): StringValue {
         partyService.addAttendee(id, value.value)
-        // todo: throw exception if attendee is already added
+        // todo: throw exception if attendee is already added bug: security risk, can take over somebody else
         return value
     }
 

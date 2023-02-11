@@ -101,8 +101,4 @@ class PollController(val pollService: PollService) {
         })
         return errors
     }
-
-    // todo: edit
-    // todo: get votes
-    // todo: add vote
 }

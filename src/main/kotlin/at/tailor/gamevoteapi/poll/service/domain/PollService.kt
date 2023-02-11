@@ -134,8 +134,8 @@ class PollService(
         val poll = pollConverter.toDomain(pollEntity)
         val hasNotVoted: (String) -> Boolean = {
             val votes = getVotes(id)
-            votes.keys.contains(it) &&
-                    votes[it] != null
+            !votes.keys.contains(it) ||
+                    votes[it] == null
         }
 
         return poll.attendees.filter(hasNotVoted).toList()
