@@ -87,7 +87,7 @@ class PartyService(
         val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
         val newOptions = partyEntity.options.toMutableSet()
         newOptions += value
-        partyEntity.options = newOptions.toList()
+        partyEntity.options = newOptions.toMutableList()
         partyRepository.save(partyEntity)
     }
 
