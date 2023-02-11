@@ -52,50 +52,50 @@ class PartyController(
         )
     }
     
-    @GetMapping("/{id}")
-    fun getParty(@PathVariable("id") id: Long): PartyDTO {
-        val party = partyService.getParty(id)
+    @GetMapping("/{code}")
+    fun getParty(@PathVariable("code") code: String): PartyDTO {
+        val party = partyService.getParty(partyService.getIdForCode(code))
         return toDTO(party)
     }
 
-    @GetMapping("/{id}/options")
-    fun getOptions(@PathVariable("id") id: Long): Set<String> {
-        val party = partyService.getParty(id)
+    @GetMapping("/{code}/options")
+    fun getOptions(@PathVariable("code") code: String): Set<String> {
+        val party = partyService.getParty(partyService.getIdForCode(code))
         return toDTO(party).options
     }
 
-    @PostMapping("/{id}/options")
-    fun postOption(@PathVariable("id") id: Long, @RequestBody value: StringValue): StringValue {
-        partyService.addOption(id, value.value)
+    @PostMapping("/{code}/options")
+    fun postOption(@PathVariable("code") code: String, @RequestBody value: StringValue): StringValue {
+        partyService.addOption(partyService.getIdForCode(code), value.value)
         return value
     }
 
-    @DeleteMapping("/{id}/options/{optionId}")
-    fun deleteOption(@PathVariable("id") id: Long, @PathVariable("optionId") optionId: Int) {
-        partyService.deleteOption(id, optionId)
+    @DeleteMapping("/{code}/options/{optionId}")
+    fun deleteOption(@PathVariable("code") code: String, @PathVariable("optionId") optionId: Int) {
+        partyService.deleteOption(partyService.getIdForCode(code), optionId)
     }
 
-    @GetMapping("/{id}/attendees")
-    fun getAttendees(@PathVariable("id") id: Long): Set<String> {
-        val party = partyService.getParty(id)
+    @GetMapping("/{code}/attendees")
+    fun getAttendees(@PathVariable("code") code: String): Set<String> {
+        val party = partyService.getParty(partyService.getIdForCode(code))
         return toDTO(party).attendees
     }
 
-    @PostMapping("/{id}/attendees")
-    fun postAttendee(@PathVariable("id") id: Long, @RequestBody value: StringValue): StringValue {
-        partyService.addAttendee(id, value.value)
+    @PostMapping("/{code}/attendees")
+    fun postAttendee(@PathVariable("code") code: String, @RequestBody value: StringValue): StringValue {
+        partyService.addAttendee(partyService.getIdForCode(code), value.value)
         // todo: throw exception if attendee is already added bug: security risk, can take over somebody else
         return value
     }
 
-    @DeleteMapping("/{id}/attendees/{attendeeId}")
-    fun deleteAttendee(@PathVariable("id") id: Long, @PathVariable("attendeeId") attendeeId: Int) {
-        partyService.deleteAttendee(id, attendeeId)
+    @DeleteMapping("/{code}/attendees/{attendeeId}")
+    fun deleteAttendee(@PathVariable("code") code: String, @PathVariable("attendeeId") attendeeId: Int) {
+        partyService.deleteAttendee(partyService.getIdForCode(code), attendeeId)
     }
 
-    @PatchMapping("/{id}")
-    fun patchParty(@PathVariable("id") id: Long, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {
-        return partyService.patchParty(id, PatchPartyRequest(
+    @PatchMapping("/{code}")
+    fun patchParty(@PathVariable("code") code: String, @RequestBody patchPartyDTO: PatchPartyDTO): PartyDTO {
+        return partyService.patchParty(partyService.getIdForCode(code), PatchPartyRequest(
             status = PartyStatus.valueOf(patchPartyDTO.status)
         )
         ).let { toDTO(it) }

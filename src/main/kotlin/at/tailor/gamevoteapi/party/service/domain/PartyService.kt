@@ -141,4 +141,8 @@ class PartyService(
         partyEntity.options = newOptions
         partyRepository.save(partyEntity)
     }
+
+    fun getIdForCode(code: String): Long {
+        return partyRepository.findByCode(code).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }.id
+    }
 }
