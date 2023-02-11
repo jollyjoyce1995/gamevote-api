@@ -19,5 +19,7 @@ data class PartyEntity(
     @OneToOne
     var poll: PollEntity? = null,
     @ElementCollection
-    var results: Map<String, Int> = mapOf()
+    var results: Map<String, Int> = mapOf(),
+    @Column(unique = true)
+    var code: String,
 )

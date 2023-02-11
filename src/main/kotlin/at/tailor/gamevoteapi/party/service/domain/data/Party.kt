@@ -8,5 +8,6 @@ data class Party (
     val options: Set<String> = setOf(),
     val status: PartyStatus = PartyStatus.NOMINATION,
     val results: Map<String, Int>? = null,
-    val poll: Poll? = null
+    val poll: Poll? = null,
+    val code: String? = null
 )

@@ -18,6 +18,7 @@ class PartyConverter(
         options = it.options.toList(),
         attendees = it.attendees.toList(),
         status = it.status.toString(),
+        code = it.code ?: "",
     )
 
     fun toDomain(it: PartyEntity): Party {
@@ -35,7 +36,8 @@ class PartyConverter(
             options = it.options.toSet(),
             status = status,
             results = it.results.toMap(),
-            poll = poll
+            poll = poll,
+            code = it.code
         )
     }
 }

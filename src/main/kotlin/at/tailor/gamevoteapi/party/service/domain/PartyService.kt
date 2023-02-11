@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.server.ResponseStatusException
 import java.lang.IndexOutOfBoundsException
+import java.util.*
 
 @Service
 class PartyService(
@@ -21,9 +22,23 @@ class PartyService(
     val partyConverter: PartyConverter
 ) {
 
+    private fun createRandomCode(): String {
+        val possibleCharacters = "ABCDEFGHJKLMNPQRSTUVQXYZ23456789"
+        return (0 until 6).map { possibleCharacters[Random().nextInt(possibleCharacters.length)] }.joinToString("")
+    }
+
+    private fun createCodeForParty(): String {
+     lateinit var randomCode: String
+        do {
+            randomCode = createRandomCode()
+        } while (partyRepository.existsByCode(randomCode))
+        return randomCode
+    }
+
     @Transactional
     fun createParty(party: Party): Party {
         val partyEntity = partyConverter.toEntity(party)
+        partyEntity.code = createCodeForParty()
         partyRepository.save(partyEntity)
         return partyConverter.toDomain(partyEntity)
     }

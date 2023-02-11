@@ -47,6 +47,7 @@ class PartyController(
             options = party.options,
             status = party.status.toString(),
             results = party.results,
+            code = party.code,
             links = links.toMap()
         )
     }
