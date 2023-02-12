@@ -21,5 +21,5 @@ data class PartyEntity(
     @ElementCollection
     var results: Map<String, Int> = mapOf(),
     @Column(unique = true)
-    var code: String,
+    var code: String? = null,
 )
