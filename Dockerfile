@@ -7,6 +7,10 @@ WORKDIR /app
 # Copy the pom.xml file to the image
 COPY pom.xml .
 
+# Download the driver artifact
+RUN mvn dependency:get -DgroupId=org.postgresql -DartifactId=postgresql -Dversion=42.5.3
+RUN mvn install:install-file -Dfile=/root/.m2/repository/org/postgresql/postgresql/42.5.3/postgresql-42.5.3.jar -DgroupId=at.tailor -DartifactId=driver -Dversion=1.0.0 -Dpackaging=jar
+
 # Download dependencies to the local maven repository
 RUN mvn dependency:go-offline
 
