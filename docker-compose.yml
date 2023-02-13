@@ -1,0 +1,33 @@
+services:
+  gamevote-db:
+    image: postgres:15
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: gamevote
+      POSTGRES_PASSWORD: gamevote
+      POSTGRES_DB: gamevote
+    user: "postgres"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+  gamevote-api:
+    depends_on:
+      - gamevote-db
+    build:
+      context: .
+      args:
+        JDBC_DRIVER_GROUP_ID: org.postgresql
+        JDBC_DRIVER_ARTIFACT_ID: postgresql
+        JDBC_DRIVER_VERSION: 42.5.3
+    ports:
+      - "8080:8080"
+    expose:
+      - 8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://gamevote-db:5432/gamevote
+      SPRING_DATASOURCE_DRIVERCLASSNAME: org.postgresql.Driver
+      SPRING_DATASOURCE_USERNAME: gamevote
+      SPRING_DATASOURCE_PASSWORD: gamevote
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+volumes:
+  pgdata:
