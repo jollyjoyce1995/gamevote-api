@@ -50,6 +50,18 @@ class PartyService(
     }
 
     @Transactional
+    fun allowedTransitions(id: Long): Set<PartyStatus> {
+        val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        val party = partyConverter.toDomain(partyEntity)
+        val fromStatus = party.status
+        return when(fromStatus) {
+            PartyStatus.NOMINATION -> if (party.options.isNotEmpty()) setOf(PartyStatus.VOTING) else setOf()
+            PartyStatus.VOTING -> setOf(PartyStatus.NOMINATION, PartyStatus.RESULTS)
+            PartyStatus.RESULTS -> setOf(PartyStatus.NOMINATION, PartyStatus.VOTING)
+        }
+    }
+
+    @Transactional
     fun patchParty(id: Long, patchPartyRequest: PatchPartyRequest): Party {
         val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
         val party = partyConverter.toDomain(partyEntity)
@@ -60,9 +72,8 @@ class PartyService(
             return party
         }
 
-        val transition = Pair(fromStatus, toStatus)
         // illegal transitions
-        if (transition == Pair(PartyStatus.NOMINATION, PartyStatus.RESULTS)) {
+        if (!allowedTransitions(id).contains(toStatus)) {
             throw ResponseStatusException(HttpStatus.BAD_REQUEST)
         }
 
