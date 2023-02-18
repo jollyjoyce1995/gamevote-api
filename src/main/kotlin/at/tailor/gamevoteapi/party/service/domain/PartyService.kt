@@ -19,7 +19,7 @@ class PartyService(
     val partyRepository: PartyRepository,
     val pollService: PollService,
     val pollRepository: PollRepository,
-    val partyConverter: PartyConverter
+    val partyConverter: PartyConverter,
 ) {
 
     private fun createRandomCode(): String {
@@ -113,6 +113,8 @@ class PartyService(
         val newAttendees = partyEntity.attendees.toMutableSet()
         newAttendees += value
         partyEntity.attendees = newAttendees.toMutableList()
+
+        partyEntity.poll?.let { pollService.addAttendee(it.id, value) }
         partyRepository.save(partyEntity)
     }
 

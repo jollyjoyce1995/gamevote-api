@@ -72,6 +72,14 @@ class PollService(
     }
 
     @Transactional
+    fun addAttendee(id: Long, attendee: String) {
+        var pollEntity = pollRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        pollEntity.attendees += attendee
+        pollEntity.status = Poll.Companion.Status.IN_PROGRESS.toString()
+        pollRepository.save(pollEntity)
+    }
+
+    @Transactional
     fun addVote(id: Long, attendee: String, choices: Map<String, Int>): Map<String, Int> {
         // all values must be in between 1 and -1 (1 means upvote, -1 means downvote, 0 means no choice) // todo: time for a dto bro //todo: must be enumerated
         if ( !choices.values.all{ it in -1..1} ) throw ResponseStatusException(HttpStatus.BAD_REQUEST)
