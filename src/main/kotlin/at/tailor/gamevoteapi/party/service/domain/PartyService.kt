@@ -158,4 +158,11 @@ class PartyService(
     fun getIdForCode(code: String): Long {
         return partyRepository.findByCode(code).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }.id
     }
+
+    @Transactional
+    fun postBeer(id: Long) {
+        val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
+        partyEntity.beerCount++
+        partyRepository.save(partyEntity)
+    }
 }

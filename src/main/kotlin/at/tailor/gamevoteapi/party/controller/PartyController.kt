@@ -101,6 +101,13 @@ class PartyController(
         ).let { toDTO(it) }
     }
 
+    @PostMapping("/{code}/beers")
+    fun postBeer(@PathVariable("code") code: String) {
+        partyService.postBeer(partyService.getIdForCode(code))
+    }
+
+
+
 }
 
 
