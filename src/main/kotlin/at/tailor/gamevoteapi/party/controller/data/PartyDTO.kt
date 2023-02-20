@@ -12,5 +12,5 @@ data class PartyDTO (
     val code: String? = null,
     @JsonProperty("_links")
     val links: Map<String, ContextLink>? = null,
-    val beerCount: Int = 0
+    val beerCount: Int
 )

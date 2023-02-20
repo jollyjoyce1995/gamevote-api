@@ -37,7 +37,8 @@ class PartyConverter(
             status = status,
             results = it.results.toMap(),
             poll = poll,
-            code = it.code
+            code = it.code,
+            beerCount = it.beerCount
         )
     }
 }

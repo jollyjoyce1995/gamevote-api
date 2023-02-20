@@ -29,7 +29,8 @@ class PartyController(
         val party = partyService.createParty(partyDTO.let {
             Party(
                 attendees = it.attendees,
-                options = it.options
+                options = it.options,
+                beerCount = 0
             )
         })
         return toDTO(party)
@@ -48,7 +49,8 @@ class PartyController(
             status = party.status.toString(),
             results = party.results,
             code = party.code,
-            links = links.toMap()
+            links = links.toMap(),
+            beerCount = party.beerCount
         )
     }
     

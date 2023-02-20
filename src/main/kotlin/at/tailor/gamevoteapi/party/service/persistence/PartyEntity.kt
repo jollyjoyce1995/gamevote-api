@@ -22,6 +22,7 @@ data class PartyEntity(
     var results: Map<String, Int> = mapOf(),
     @Column(unique = true)
     var code: String? = null,
+    @Column(name = "beer_count")
     var beerCount: Int = 0
 ) {
 
