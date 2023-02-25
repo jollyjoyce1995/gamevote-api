@@ -38,7 +38,10 @@ class PartyConverter(
             results = it.results.toMap(),
             poll = poll,
             code = it.code,
-            beerCount = it.beerCount
+            beerCount = it.beers.size,
+            beerPerAttendee = it.attendees.map { attendee ->
+                Pair(attendee, it.beers.filter { it.attendee == attendee }.size)
+            }.sortedByDescending { it.second }.toMap()
         )
     }
 }

@@ -1,9 +1,12 @@
 package at.tailor.gamevoteapi.party.service.domain
 
+import at.tailor.gamevoteapi.party.service.domain.data.Beer
 import at.tailor.gamevoteapi.party.service.persistence.PartyRepository
 import at.tailor.gamevoteapi.party.service.domain.data.Party
 import at.tailor.gamevoteapi.party.service.domain.data.PartyStatus
 import at.tailor.gamevoteapi.party.service.domain.data.PatchPartyRequest
+import at.tailor.gamevoteapi.party.service.persistence.BeerEntity
+import at.tailor.gamevoteapi.party.service.persistence.BeerRepository
 import at.tailor.gamevoteapi.poll.service.domain.Poll
 import at.tailor.gamevoteapi.poll.service.domain.PollService
 import at.tailor.gamevoteapi.poll.service.persistence.PollRepository
@@ -20,6 +23,7 @@ class PartyService(
     val pollService: PollService,
     val pollRepository: PollRepository,
     val partyConverter: PartyConverter,
+    val beerRepository: BeerRepository
 ) {
 
     private fun createRandomCode(): String {
@@ -160,9 +164,9 @@ class PartyService(
     }
 
     @Transactional
-    fun postBeer(id: Long) {
+    fun postBeer(id: Long, beer: Beer) {
         val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
-        partyEntity.beerCount++
-        partyRepository.save(partyEntity)
+        val beerEntity = BeerEntity(party = partyEntity, attendee = beer.attendee)
+        beerRepository.save(beerEntity)
     }
 }

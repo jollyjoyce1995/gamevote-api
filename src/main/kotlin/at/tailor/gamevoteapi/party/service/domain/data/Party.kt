@@ -10,5 +10,6 @@ data class Party (
     val results: Map<String, Int>? = null,
     val poll: Poll? = null,
     val code: String? = null,
-    val beerCount: Int
+    val beerCount: Int,
+    val beerPerAttendee: Map<String, Int>
 )
