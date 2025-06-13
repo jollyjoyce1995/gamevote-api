@@ -166,7 +166,7 @@ class PartyService(
     @Transactional
     fun postBeer(id: Long, beer: Beer) {
         val partyEntity = partyRepository.findById(id).orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND) }
-        val beerEntity = BeerEntity(party = partyEntity, attendee = beer.attendee)
+        val beerEntity = BeerEntity(party = partyEntity, attendee = beer.attendee, dateTime = beer.dateTime)
         beerRepository.save(beerEntity)
     }
 }

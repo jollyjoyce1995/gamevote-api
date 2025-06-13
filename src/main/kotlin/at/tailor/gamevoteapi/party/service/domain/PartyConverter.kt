@@ -8,40 +8,49 @@ import at.tailor.gamevoteapi.poll.service.domain.PollConverter
 import org.springframework.stereotype.Service
 
 @Service
-class PartyConverter(
-    val pollConverter: PollConverter
-) {
-    fun toEntity(
-        it: Party
-    ) = PartyEntity(
-        id = it.id ?: 0,
-        options = it.options.toList(),
-        attendees = it.attendees.toList(),
-        status = it.status.toString(),
-        code = it.code ?: "",
-    )
+class PartyConverter(val pollConverter: PollConverter) {
+    fun toEntity(it: Party) =
+            PartyEntity(
+                    id = it.id ?: 0,
+                    options = it.options.toList(),
+                    attendees = it.attendees.toList(),
+                    status = it.status.toString(),
+                    code = it.code ?: "",
+            )
 
     fun toDomain(it: PartyEntity): Party {
-        val poll = it.poll?.let{pollConverter.toDomain(it)}
-        val status = if (poll == null) {
-            PartyStatus.NOMINATION
-        } else if (poll.status == Poll.Companion.Status.IN_PROGRESS) {
-            PartyStatus.VOTING
-        } else {
-            PartyStatus.RESULTS
-        }
+        val poll = it.poll?.let { pollConverter.toDomain(it) }
+        val status =
+                if (poll == null) {
+                    PartyStatus.NOMINATION
+                } else if (poll.status == Poll.Companion.Status.IN_PROGRESS) {
+                    PartyStatus.VOTING
+                } else {
+                    PartyStatus.RESULTS
+                }
         return Party(
-            id = it.id,
-            attendees = it.attendees.toSet(),
-            options = it.options.toSet(),
-            status = status,
-            results = it.results.toMap(),
-            poll = poll,
-            code = it.code,
-            beerCount = it.beers.size,
-            beerPerAttendee = it.attendees.map { attendee ->
-                Pair(attendee, it.beers.filter { it.attendee == attendee }.size)
-            }.sortedByDescending { it.second }.toMap()
+                id = it.id,
+                attendees = it.attendees.toSet(),
+                options = it.options.toSet(),
+                status = status,
+                results = it.results.toMap(),
+                poll = poll,
+                code = it.code,
+                beerCount = it.beers.size,
+                beerPerAttendee =
+                        it.attendees
+                                .map { attendee ->
+                                    Pair(attendee, it.beers.filter { it.attendee == attendee }.size)
+                                }
+                                .sortedByDescending { it.second }
+                                .toMap(),
+                beerChartData =
+                        it.beers.groupBy { it.attendee }.mapValues { beer ->
+                            beer.value
+                                    .filter { it.dateTime != null } // only if datetime is nullable
+                                    .map { it.dateTime!!.withSecond(0).withNano(0) }
+                                    .toList()
+                        }
         )
     }
 }

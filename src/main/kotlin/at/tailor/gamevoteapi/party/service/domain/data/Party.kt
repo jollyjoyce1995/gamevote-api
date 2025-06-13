@@ -1,6 +1,7 @@
 package at.tailor.gamevoteapi.party.service.domain.data
 
 import at.tailor.gamevoteapi.poll.service.domain.Poll
+import java.time.LocalDateTime
 
 data class Party (
     val id: Long? = null,
@@ -11,5 +12,6 @@ data class Party (
     val poll: Poll? = null,
     val code: String? = null,
     val beerCount: Int,
-    val beerPerAttendee: Map<String, Int>
+    val beerPerAttendee: Map<String, Int>,
+    val beerChartData: Map<String, List<LocalDateTime>>?
 )

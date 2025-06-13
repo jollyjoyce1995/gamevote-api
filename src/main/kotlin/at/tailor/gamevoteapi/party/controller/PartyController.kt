@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/parties")
@@ -33,7 +34,8 @@ class PartyController(
                 attendees = it.attendees,
                 options = it.options,
                 beerCount = 0,
-                beerPerAttendee = mapOf()
+                beerPerAttendee = mapOf(),
+                beerChartData = mapOf()
             )
         })
         return toDTO(party)
@@ -54,7 +56,8 @@ class PartyController(
             code = party.code,
             links = links.toMap(),
             beerCount = party.beerCount,
-            beerPerAttendee = party.beerPerAttendee.toMutableMap()
+            beerPerAttendee = party.beerPerAttendee.toMutableMap(),
+            beerChartData = party.beerChartData
         )
     }
     
@@ -109,7 +112,7 @@ class PartyController(
 
     @PostMapping("/{code}/beers")
     fun postBeer(@PathVariable("code") code: String, @RequestBody beer: BeerDTO) {
-        partyService.postBeer(partyService.getIdForCode(code), Beer(attendee = beer.attendee))
+        partyService.postBeer(partyService.getIdForCode(code), Beer(attendee = beer.attendee, LocalDateTime.now()))
     }
 
 }
