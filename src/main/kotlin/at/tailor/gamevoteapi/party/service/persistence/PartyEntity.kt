@@ -22,4 +22,11 @@ data class PartyEntity(
     var results: Map<String, Int> = mapOf(),
     @Column(unique = true)
     var code: String? = null,
-)
+    // todo: remove
+    @Column(name = "beer_count")
+    var beerCount: Int = 0,
+    @OneToMany(mappedBy = "party")
+    val beers: MutableList<BeerEntity> = mutableListOf()
+) {
+
+}

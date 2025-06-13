@@ -2,11 +2,13 @@ package at.tailor.gamevoteapi.party.controller
 
 import at.tailor.gamevoteapi.common.dto.ContextLink
 import at.tailor.gamevoteapi.party.*
+import at.tailor.gamevoteapi.party.controller.data.BeerDTO
 import at.tailor.gamevoteapi.party.controller.data.PartyDTO
 import at.tailor.gamevoteapi.party.controller.data.PatchPartyDTO
 import at.tailor.gamevoteapi.party.controller.data.StringValue
 import at.tailor.gamevoteapi.party.service.domain.data.Party
 import at.tailor.gamevoteapi.party.service.domain.PartyService
+import at.tailor.gamevoteapi.party.service.domain.data.Beer
 import at.tailor.gamevoteapi.party.service.domain.data.PartyStatus
 import at.tailor.gamevoteapi.party.service.domain.data.PatchPartyRequest
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -29,7 +31,9 @@ class PartyController(
         val party = partyService.createParty(partyDTO.let {
             Party(
                 attendees = it.attendees,
-                options = it.options
+                options = it.options,
+                beerCount = 0,
+                beerPerAttendee = mapOf()
             )
         })
         return toDTO(party)
@@ -48,7 +52,9 @@ class PartyController(
             status = party.status.toString(),
             results = party.results,
             code = party.code,
-            links = links.toMap()
+            links = links.toMap(),
+            beerCount = party.beerCount,
+            beerPerAttendee = party.beerPerAttendee.toMutableMap()
         )
     }
     
@@ -99,6 +105,11 @@ class PartyController(
             status = PartyStatus.valueOf(patchPartyDTO.status)
         )
         ).let { toDTO(it) }
+    }
+
+    @PostMapping("/{code}/beers")
+    fun postBeer(@PathVariable("code") code: String, @RequestBody beer: BeerDTO) {
+        partyService.postBeer(partyService.getIdForCode(code), Beer(attendee = beer.attendee))
     }
 
 }
