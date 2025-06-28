@@ -15,8 +15,8 @@ RUN JDBC_DRIVER_GROUP_FOLDER=
 
 
 # Download the driver artifact
-RUN mvn dependency:get -DgroupId=${JDBC_DRIVER_GROUP_ID} -DartifactId=${JDBC_DRIVER_ARTIFACT_ID} -Dversion=${JDBC_DRIVER_VERSION}
-RUN export groupFolder=$(echo "${JDBC_DRIVER_GROUP_ID}" | sed 's/\./\//g'); mvn install:install-file -Dfile=/root/.m2/repository/$groupFolder/${JDBC_DRIVER_ARTIFACT_ID}/${JDBC_DRIVER_VERSION}/${JDBC_DRIVER_ARTIFACT_ID}-${JDBC_DRIVER_VERSION}.jar -DgroupId=at.tailor -DartifactId=driver -Dversion=1.0.0 -Dpackaging=jar
+RUN mvn dependency:get -DgroupId=org.postgresql -DartifactId=postgresql -Dversion=42.5.3
+RUN export groupFolder=$(echo "org.postgresql" | sed 's/\./\//g'); mvn install:install-file -Dfile=/root/.m2/repository/$groupFolder/postgresql/42.5.3/postgresql-42.5.3.jar -DgroupId=at.tailor -DartifactId=driver -Dversion=1.0.0 -Dpackaging=jar
 
 # Download dependencies to the local maven repository
 RUN mvn dependency:go-offline
